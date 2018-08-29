@@ -63,23 +63,30 @@
         window.location.href = "/account/register"
     }
 
+    // 给图片添加点击事件
+    $('#vcodeimgId').click(function(){
+        $('#vcodeimgId').attr('src',`/account/vcode?vcodeimgId=${Math.random()}`)
+        // alert('a')
+    })
+
     function login() {
         // 获取到val值
         const username = $('#usernameId').val()
         const password = md5($('#passwordId').val() + "!@#zhangsha")
-        const vcodeId = $('#vcodeId').val()
+        const vcode = $('#vcodeId').val()
         // console.log(username);
         // console.log(password);
         // 有打印但是需要传送给服务器去操作数据库判断
 
         // 发送post请求 这里是post请求简写
-        $.post("/account/login", { username, password, vcodeId }, function (result) {
+        $.post("/account/login", { username, password, vcode }, function (result) {
             //如果不等于0那么就是注册失败 反之成功跳转到登录页面
             if (result.status !== 0) {
+                // 重新获取验证码
+                $('#vcodeimgId').attr('src',`/account/vcode?vcodeimgId=${Math.random()}`)
                 alert(result.message)
-
             } else {
-                window.location.href = "/account/login"
+                // window.location.href = "/account/login"
             }
         })
     }

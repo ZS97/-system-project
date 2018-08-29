@@ -99,9 +99,10 @@ exports.register = (req, res) => {
 
 exports.vcodeimgId = (req, res) => {
     const vcode = parseInt(Math.random() * 9000 + 1000);
-  
+    // console.log(vcode);
+    
     // 把刚刚随机生成的验证码，存储到session中
-    req.session.vcode = vcode
+    //req.session.vcode = vcode
   
     var p = new captchapng(80, 30, vcode); // width,height,numeric captcha
     p.color(0, 0, 0, 0); // First color: background (red, green, blue, alpha)
@@ -118,6 +119,7 @@ exports.vcodeimgId = (req, res) => {
   
 
 //   最终处理 , 登录处理
+//如果vcode相等就让他跳转页面
 
 
 

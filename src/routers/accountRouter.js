@@ -28,6 +28,11 @@ router.post('/register',accountURL.register)
 
 // 获取图片验证码
 router.get('/vcode',accountURL.vcodeimgId)
+// 多了一层路径
+// router.get('/account/vcode',accountURL.vcodeimgId)
+
+
+
 
 
 // 最重要的一步 忘记导出路由
