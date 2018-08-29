@@ -30,7 +30,7 @@ app.use('/account', newFile)
 // 通过路径 集成路由 打通路径
 const studentFile = require(path.join(__dirname,'./routers/studentmanager.js'))
 
-app.use('/account',studentFile)
+app.use('/studentmassage',studentFile)
 
 
 
