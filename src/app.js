@@ -27,12 +27,14 @@ const newFile = require(path.join(__dirname, "./routers/accountRouter.js"))
 app.use('/account', newFile)
 
 
-// 通过路径 集成路由 打通路径
+// 通过路径 集成路由 打通路径 获取后台管理系统
 const studentFile = require(path.join(__dirname,'./routers/studentmanager.js'))
 
 app.use('/studentmassage',studentFile)
 
 
+
+// 
 
 // 开启web服务
 app.listen(3000, '127.0.0.1', err => {
