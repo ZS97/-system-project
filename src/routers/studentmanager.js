@@ -3,7 +3,7 @@ const express = require('express')
 
 
 // 控制路由
-router = express.Router();
+const router = express.Router();
 
 const listFile = require(path.join(__dirname,'../controllers/accountstudentmanager.js'))
 

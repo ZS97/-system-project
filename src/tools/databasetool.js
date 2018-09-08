@@ -113,16 +113,16 @@ exports.insertOne = (accountInfo, data, callback) => {
 }
 
 // 删除
-exports.deleteOne = (accountInfo,data,callback)=>{
+exports.deleteOne = (accountInfo, data, callback) => {
     MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
         // 拿到集合
         const db = client.db(dbName);
 
         // Get the documents collection 拿到要操作的集合(数据库名)
         const collection = db.collection(accountInfo);
-        collection.deleteOne(data,(err,result)=>{
+        collection.deleteOne(data, (err, result) => {
             client.close()
-            callback(err,result)
+            callback(err, result)
         })
 
     })
@@ -131,7 +131,26 @@ exports.deleteOne = (accountInfo,data,callback)=>{
 
 
 // updateOne 修改编辑页面
-exports.updateOne = (accountInfo, data, callback) => {
+// exports.updateOne = (accountInfo, data, params, callback) => {
+//     // 需要去数据库校验 
+//     // 测试的时候如果后面使用了加盐那么你就不能再输入数据库里面存的是明文
+//     connectDB(accountInfo,(err, client, collection))
+//     collection.updateOne(collection,{ $set: params }, (err, doc) => {
+//         // 如果返回的空的话那么就修改状态 
+//         client.close()
+//         callback(err, doc)
+//         //执行函数传递参数 callback
+//     })
+// }
+
+/**
+ * 暴露给控制器用的，修改一个的方法
+ * @param {*} accountInfo 集合名称
+ * @param {*} condition 条件
+ * @param {*} params 参数对象
+ * @param {*} callback 回调函数
+ */
+exports.updateOne = (accountInfo, condition,params, callback) => {
     // 需要去数据库校验 
     // 测试的时候如果后面使用了加盐那么你就不能再输入数据库里面存的是明文
     MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
@@ -140,7 +159,7 @@ exports.updateOne = (accountInfo, data, callback) => {
 
         // Get the documents collection 拿到要操作的集合(数据库)
         const collection = db.collection(accountInfo);
-        collection.updateOne({ $set: params }, (err, doc) => {
+        collection.updateOne(condition,{ $set: params }, (err, doc) => {
             // 如果返回的空的话那么就修改状态 
             client.close()
             callback(err, doc)
@@ -152,5 +171,17 @@ exports.updateOne = (accountInfo, data, callback) => {
 }
 
 
-// 封装方法
+// 抽取连接数据库的方法 把集合名称跟回调函数暴露出去
+const connectDB = (collectionName, callback) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
+        // 拿到集合
+        const db = client.db(dbName);
+
+        // Get the documents collection 拿到要操作的集合(数据库)
+        const collection = db.collection(accountInfo);
+
+        callback(err, client, collection)
+    })
+}
+
 

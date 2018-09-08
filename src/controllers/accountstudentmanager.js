@@ -3,6 +3,8 @@ const xtpl = require('xtpl')
 // 需要从databasetool拿到结果集
 const databasetool = require(path.join(__dirname, '../tools/databasetool.js'))
 
+
+// 最终处理，返回获取到的学生列表页面
 // 通过关键字去数据库查询
 // 需要导出 这里=是赋值
 exports.getlistfile = (req, res) => {
@@ -16,8 +18,9 @@ exports.getlistfile = (req, res) => {
         xtpl.renderFile(path.join(__dirname, '../statics/views/list.html'), {
             // student 就是渲染的时候需要的名称
             student: docs,
-            keyword
-
+            keyword,
+            loginName:req.session.loginName
+            
         }, function (error, content) {
             res.send(content)
             // 把结果通过回调 模板之间的连接用回调
@@ -48,6 +51,8 @@ exports.addStudentpage = (req, res) => {
 
 
     }, function (error, content) {
+        console.log(content);
+        
         res.send(content)
     });
 
@@ -69,14 +74,15 @@ exports.addStudent = (req, res) => {
 }
 
 // 编辑页面 渲染 需要用到xtpl
-// 
+// 最终处理，返回修改学生页面(带有查询出来的数据)
 exports.editPage = (req, res) => {
     databasetool.findOne('studentInfo',{_id: databasetool.ObjectId(req.params.studentId)},(err,doc)=>{
         console.log(doc);
         
         xtpl.renderFile(path.join(__dirname,'../statics/views/edit.html'), {
             // 动态生成
-            student:doc
+            student:doc,
+            loginName: req.session.loginName
         }, function (error, content) {
             res.end(content)
         });
@@ -87,14 +93,18 @@ exports.editPage = (req, res) => {
 
 // 完成编辑是通过传递id 然后取updateOne 
 exports.editUpdate = (req,res)=>{
-    databasetool.updateOne('studentInfo',{_id: databasetool.ObjectId(req.params.studentId)},(err,doc)=>{
-        xtpl.renderFile(path.join(__dirname,'../statics/views/edit.html'), {
-            // 动态生成
-            student:doc,
-            loginName:req.session.loginName
-        }, function (error, content) {
-            res.end(content)
-        });
+    databasetool.updateOne('studentInfo',{_id: databasetool.ObjectId(req.params.studentId)},req.body,(err,doc)=>{
+        // console.log(doc);
+        
+        if (doc == null) {
+            // 修改失败
+            res.send(`<script>alert("修改失败!");</script>`);
+          } else {
+            //修改成功
+            res.send(
+              `<script>window.location.href="/studentmassage/list"</script>`
+            );
+          }
     })
 }
 
